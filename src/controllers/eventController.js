@@ -1,26 +1,60 @@
+const eventService = require("../services/eventService");
+
 exports.createEvent = (req, res) => {
-  // Implémentation provisoire
-  res.status(201).json({ message: "Event created (not implemented)" });
+  try {
+    const event = eventService.createEvent(req.body);
+    res.status(201).json({ message: "Event created", event });
+  } catch (error) {
+    console.error("Error creating event:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.getEvents = (req, res) => {
-  res.status(200).json({ message: "List of events (not implemented)" });
+  try {
+    const events = eventService.getEvents();
+    res.status(200).json({ events });
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.getEventById = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Event ${req.params.id} details (not implemented)` });
+  try {
+    const event = eventService.getEventById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json({ event });
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.updateEvent = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Event ${req.params.id} updated (not implemented)` });
+  try {
+    const updatedEvent = eventService.updateEvent(req.params.id, req.body);
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json({ message: "Event updated", event: updatedEvent });
+  } catch (error) {
+    console.error("Error updating event:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 exports.deleteEvent = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `Event ${req.params.id} deleted (not implemented)` });
+  try {
+    const success = eventService.deleteEvent(req.params.id);
+    if (!success) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json({ message: "Event deleted" });
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
