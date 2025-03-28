@@ -1,0 +1,27 @@
+const express = require("express");
+const morgan = require("morgan");
+const bodyParser = require("body-parser");
+
+const eventRoutes = require("./routes/eventRoutes");
+const userRoutes = require("./routes/userRoutes");
+const authRoutes = require("./routes/authRoutes");
+const ticketRoutes = require("./routes/ticketRoutes");
+
+const app = express();
+
+app.use(morgan("dev"));
+app.use(bodyParser.json());
+
+// Endpoint de vérification de l'état de l'application
+app.get("/health", (req, res) => res.send({ status: "OK" }));
+
+// Routes principales de l'API
+app.use("/api/events", eventRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/tickets", ticketRoutes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+
+module.exports = app; // Export pour les tests
