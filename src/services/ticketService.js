@@ -1,4 +1,3 @@
-// src/services/ticketService.js
 const eventService = require("./eventService");
 
 let tickets = [];
