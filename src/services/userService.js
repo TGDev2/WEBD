@@ -1,15 +1,17 @@
-let users = [];
-let nextUserId = 1;
+const { User } = require("../models");
 
-const createUser = (userData) => {
-  const user = { id: nextUserId++, ...userData };
-  users.push(user);
+const createUser = async (userData) => {
+  const user = await User.create(userData);
   return user;
 };
 
-const getUserByEmail = (email) => users.find((u) => u.email === email);
+const getUserByEmail = async (email) => {
+  return await User.findOne({ where: { email } });
+};
 
-const getUserById = (id) => users.find((u) => u.id === parseInt(id, 10));
+const getUserById = async (id) => {
+  return await User.findByPk(id);
+};
 
 module.exports = {
   createUser,

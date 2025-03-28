@@ -1,19 +1,8 @@
-const eventService = require("./eventService");
+const { Ticket, Event } = require("../models");
 
-let tickets = [];
-let nextTicketId = 1;
-
-/**
- * Permet l'achat d'un billet pour un événement donné par un utilisateur.
- * Vérifie la disponibilité, incrémente soldSeats et crée un ticket unique.
- * @param {number|string} userId - Identifiant de l'utilisateur acheteur.
- * @param {number|string} eventId - Identifiant de l'événement.
- * @returns {Object} Le billet créé.
- * @throws {Error} Si l'événement n'existe pas ou est complet.
- */
-const buyTicket = (userId, eventId) => {
+const buyTicket = async (userId, eventId) => {
   // Récupération de l'événement
-  const event = eventService.getEventById(eventId);
+  const event = await Event.findByPk(eventId);
   if (!event) {
     throw new Error("Event not found");
   }
@@ -22,17 +11,15 @@ const buyTicket = (userId, eventId) => {
     throw new Error("Event is sold out");
   }
   // Incrémenter le nombre de billets vendus
-  event.soldSeats++;
+  event.soldSeats += 1;
+  await event.save();
 
   // Création du billet unique
-  const ticket = {
-    id: nextTicketId++,
+  const ticket = await Ticket.create({
     eventId: event.id,
     userId,
-    purchaseDate: new Date().toISOString(),
-  };
-
-  tickets.push(ticket);
+    purchaseDate: new Date().toISOString()
+  });
 
   // Simulation d'envoi asynchrone de confirmation (email/SMS)
   setTimeout(() => {

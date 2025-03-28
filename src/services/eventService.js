@@ -1,57 +1,33 @@
-let events = [];
-let nextId = 1;
+const { Event } = require("../models");
 
-/**
- * Crée un nouvel événement avec un nombre maximum de places et initialise soldSeats à 0.
- * @param {Object} eventData - Données de l'événement.
- * @returns {Object} L'événement créé.
- */
-const createEvent = (eventData) => {
-  const { maxSeats = 100, ...rest } = eventData;
-  const event = { id: nextId++, maxSeats, soldSeats: 0, ...rest };
-  events.push(event);
+const createEvent = async (eventData) => {
+  const event = await Event.create(eventData);
   return event;
 };
 
-/**
- * Retourne la liste de tous les événements.
- * @returns {Array} Liste des événements.
- */
-const getEvents = () => events;
-
-/**
- * Retourne un événement par son identifiant.
- * @param {number|string} id - Identifiant de l'événement.
- * @returns {Object|undefined} L'événement trouvé ou undefined.
- */
-const getEventById = (id) => events.find((e) => e.id === parseInt(id, 10));
-
-/**
- * Met à jour un événement existant.
- * @param {number|string} id - Identifiant de l'événement.
- * @param {Object} eventData - Nouvelles données de l'événement.
- * @returns {Object|null} L'événement mis à jour ou null si non trouvé.
- */
-const updateEvent = (id, eventData) => {
-  const index = events.findIndex((e) => e.id === parseInt(id, 10));
-  if (index === -1) {
-    return null;
-  }
-  events[index] = { ...events[index], ...eventData };
-  return events[index];
+const getEvents = async () => {
+  return await Event.findAll();
 };
 
-/**
- * Supprime un événement par son identifiant.
- * @param {number|string} id - Identifiant de l'événement.
- * @returns {boolean} True si l'événement a été supprimé, sinon false.
- */
-const deleteEvent = (id) => {
-  const index = events.findIndex((e) => e.id === parseInt(id, 10));
-  if (index === -1) {
+const getEventById = async (id) => {
+  return await Event.findByPk(id);
+};
+
+const updateEvent = async (id, eventData) => {
+  const event = await Event.findByPk(id);
+  if (!event) {
+    return null;
+  }
+  await event.update(eventData);
+  return event;
+};
+
+const deleteEvent = async (id) => {
+  const event = await Event.findByPk(id);
+  if (!event) {
     return false;
   }
-  events.splice(index, 1);
+  await event.destroy();
   return true;
 };
 

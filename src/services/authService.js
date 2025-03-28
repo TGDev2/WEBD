@@ -5,11 +5,12 @@ const userService = require("./userService");
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
 const registerUser = async (userData) => {
-  if (userService.getUserByEmail(userData.email)) {
+  const existingUser = await userService.getUserByEmail(userData.email);
+  if (existingUser) {
     throw new Error("User already exists");
   }
   const hashedPassword = await bcrypt.hash(userData.password, 10);
-  const newUser = userService.createUser({
+  const newUser = await userService.createUser({
     ...userData,
     password: hashedPassword,
   });
@@ -17,7 +18,7 @@ const registerUser = async (userData) => {
 };
 
 const loginUser = async (email, password) => {
-  const user = userService.getUserByEmail(email);
+  const user = await userService.getUserByEmail(email);
   if (!user) {
     throw new Error("Invalid credentials");
   }
