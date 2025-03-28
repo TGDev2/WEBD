@@ -2,12 +2,13 @@ let events = [];
 let nextId = 1;
 
 /**
- * Crée un nouvel événement.
+ * Crée un nouvel événement avec un nombre maximum de places et initialise soldSeats à 0.
  * @param {Object} eventData - Données de l'événement.
  * @returns {Object} L'événement créé.
  */
 const createEvent = (eventData) => {
-  const event = { id: nextId++, ...eventData };
+  const { maxSeats = 100, ...rest } = eventData;
+  const event = { id: nextId++, maxSeats, soldSeats: 0, ...rest };
   events.push(event);
   return event;
 };
