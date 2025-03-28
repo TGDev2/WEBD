@@ -6,11 +6,15 @@ const eventRoutes = require("./routes/eventRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
+const { swaggerUi, swaggerSpec } = require("./swagger");
 
 const app = express();
 
 app.use(morgan("dev"));
 app.use(bodyParser.json());
+
+// Documentation Swagger accessible sur /api-docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Endpoint de vérification de l'état de l'application
 app.get("/health", (req, res) => res.send({ status: "OK" }));
