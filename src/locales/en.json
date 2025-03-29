@@ -1,0 +1,18 @@
+{
+    "userRegistered": "User registered successfully",
+    "loginSuccessful": "Login successful",
+    "invalidCredentials": "Invalid credentials",
+    "eventCreated": "Event created",
+    "eventNotFound": "Event not found",
+    "eventUpdated": "Event updated",
+    "eventDeleted": "Event deleted",
+    "ticketPurchased": "Ticket purchased successfully",
+    "ticketPurchaseFailed": "Ticket purchase failed",
+    "userCreated": "User created successfully",
+    "listUsers": "List of users",
+    "userDetails": "User details",
+    "userUpdated": "User updated successfully",
+    "userDeleted": "User deleted successfully",
+    "internalServerError": "Internal server error"
+  }
+  

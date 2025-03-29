@@ -1,25 +1,19 @@
 exports.createUser = (req, res) => {
-  res.status(201).json({ message: "User created (not implemented)" });
+  res.status(201).json({ message: req.t("userCreated") });
 };
 
 exports.getUsers = (req, res) => {
-  res.status(200).json({ message: "List of users (not implemented)" });
+  res.status(200).json({ message: req.t("listUsers") });
 };
 
 exports.getUserById = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `User ${req.params.id} details (not implemented)` });
+  res.status(200).json({ message: req.t("userDetails") });
 };
 
 exports.updateUser = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `User ${req.params.id} updated (not implemented)` });
+  res.status(200).json({ message: req.t("userUpdated") });
 };
 
 exports.deleteUser = (req, res) => {
-  res
-    .status(200)
-    .json({ message: `User ${req.params.id} deleted (not implemented)` });
+  res.status(200).json({ message: req.t("userDeleted") });
 };

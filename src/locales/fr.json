@@ -1,0 +1,18 @@
+{
+    "userRegistered": "Utilisateur enregistré avec succès",
+    "loginSuccessful": "Connexion réussie",
+    "invalidCredentials": "Identifiants invalides",
+    "eventCreated": "Événement créé",
+    "eventNotFound": "Événement non trouvé",
+    "eventUpdated": "Événement mis à jour",
+    "eventDeleted": "Événement supprimé",
+    "ticketPurchased": "Billet acheté avec succès",
+    "ticketPurchaseFailed": "Échec de l'achat du billet",
+    "userCreated": "Utilisateur créé avec succès",
+    "listUsers": "Liste des utilisateurs",
+    "userDetails": "Détails de l'utilisateur",
+    "userUpdated": "Utilisateur mis à jour avec succès",
+    "userDeleted": "Utilisateur supprimé avec succès",
+    "internalServerError": "Erreur interne du serveur"
+  }
+  

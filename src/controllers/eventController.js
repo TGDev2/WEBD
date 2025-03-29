@@ -1,60 +1,65 @@
 const eventService = require("../services/eventService");
 
-exports.createEvent = (req, res) => {
+exports.createEvent = async (req, res) => {
   try {
-    const event = eventService.createEvent(req.body);
-    res.status(201).json({ message: "Event created", event });
+    const event = await eventService.createEvent(req.body);
+    res.status(201).json({ message: req.t("eventCreated"), event });
   } catch (error) {
     console.error("Error creating event:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: req.t("internalServerError") });
   }
 };
 
-exports.getEvents = (req, res) => {
+exports.getEvents = async (req, res) => {
   try {
-    const events = eventService.getEvents();
+    const events = await eventService.getEvents();
     res.status(200).json({ events });
   } catch (error) {
     console.error("Error fetching events:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: req.t("internalServerError") });
   }
 };
 
-exports.getEventById = (req, res) => {
+exports.getEventById = async (req, res) => {
   try {
-    const event = eventService.getEventById(req.params.id);
+    const event = await eventService.getEventById(req.params.id);
     if (!event) {
-      return res.status(404).json({ message: "Event not found" });
+      return res.status(404).json({ message: req.t("eventNotFound") });
     }
     res.status(200).json({ event });
   } catch (error) {
     console.error("Error fetching event:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: req.t("internalServerError") });
   }
 };
 
-exports.updateEvent = (req, res) => {
+exports.updateEvent = async (req, res) => {
   try {
-    const updatedEvent = eventService.updateEvent(req.params.id, req.body);
+    const updatedEvent = await eventService.updateEvent(
+      req.params.id,
+      req.body
+    );
     if (!updatedEvent) {
-      return res.status(404).json({ message: "Event not found" });
+      return res.status(404).json({ message: req.t("eventNotFound") });
     }
-    res.status(200).json({ message: "Event updated", event: updatedEvent });
+    res
+      .status(200)
+      .json({ message: req.t("eventUpdated"), event: updatedEvent });
   } catch (error) {
     console.error("Error updating event:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: req.t("internalServerError") });
   }
 };
 
-exports.deleteEvent = (req, res) => {
+exports.deleteEvent = async (req, res) => {
   try {
-    const success = eventService.deleteEvent(req.params.id);
+    const success = await eventService.deleteEvent(req.params.id);
     if (!success) {
-      return res.status(404).json({ message: "Event not found" });
+      return res.status(404).json({ message: req.t("eventNotFound") });
     }
-    res.status(200).json({ message: "Event deleted" });
+    res.status(200).json({ message: req.t("eventDeleted") });
   } catch (error) {
     console.error("Error deleting event:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: req.t("internalServerError") });
   }
 };
