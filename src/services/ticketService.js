@@ -1,6 +1,16 @@
 const { Ticket, Event } = require("../models");
+const paymentService = require("./paymentService");
 
-const buyTicket = async (userId, eventId) => {
+const buyTicket = async (userId, eventId, paymentInfo) => {
+  // Simulation du paiement par carte bancaire
+  const paymentResult = await paymentService.simulateCardPayment(
+    paymentInfo,
+    100
+  ); // montant fixe pour l'exemple
+  if (paymentResult.status !== "approved") {
+    throw new Error("Payment failed");
+  }
+
   // Récupération de l'événement
   const event = await Event.findByPk(eventId);
   if (!event) {
@@ -18,7 +28,7 @@ const buyTicket = async (userId, eventId) => {
   const ticket = await Ticket.create({
     eventId: event.id,
     userId,
-    purchaseDate: new Date().toISOString()
+    purchaseDate: new Date().toISOString(),
   });
 
   // Simulation d'envoi asynchrone de confirmation (email/SMS)
