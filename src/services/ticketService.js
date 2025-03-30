@@ -1,9 +1,13 @@
 const { Ticket, Event, sequelize } = require("../models");
 const paymentService = require("./paymentService");
+const crypto = require("crypto");
 
 const buyTicket = async (userId, eventId, paymentInfo) => {
   // Simulation du paiement par carte bancaire
-  const paymentResult = await paymentService.simulateCardPayment(paymentInfo, 100); // montant fixe pour l'exemple
+  const paymentResult = await paymentService.simulateCardPayment(
+    paymentInfo,
+    100
+  ); // montant fixe pour l'exemple
   if (paymentResult.status !== "approved") {
     throw new Error("Payment failed");
   }
@@ -27,12 +31,16 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
     event.soldSeats += 1;
     await event.save({ transaction });
 
+    // Génération d'un numéro de billet unique
+    const ticketNumber = crypto.randomBytes(8).toString("hex");
+
     // Création du billet unique dans le cadre de la transaction
     const ticket = await Ticket.create(
       {
         eventId: event.id,
         userId,
         purchaseDate: new Date().toISOString(),
+        ticketNumber,
       },
       { transaction }
     );
@@ -40,11 +48,12 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
     await transaction.commit();
 
     // Simulation d'envoi asynchrone de confirmation (email/SMS)
-    setTimeout(() => {
+    const confirmationTimer = setTimeout(() => {
       console.log(
         `Confirmation sent for ticket ID ${ticket.id} to user ${ticket.userId}`
       );
     }, 1000);
+    confirmationTimer.unref();
 
     return ticket;
   } catch (error) {

@@ -5,11 +5,16 @@ module.exports = (sequelize) => {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
+      primaryKey: true,
+    },
+    ticketNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
     },
     purchaseDate: {
       type: DataTypes.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 };
