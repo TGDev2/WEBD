@@ -1,0 +1,15 @@
+{
+    "name": "concert-ticketing-frontend",
+    "version": "0.1.0",
+    "description": "Frontend for Concert Ticketing System",
+    "main": "index.html",
+    "scripts": {
+        "test": "jest"
+    },
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "jest": "^29.5.0",
+        "jest-environment-jsdom": "^29.7.0"
+    }
+}
