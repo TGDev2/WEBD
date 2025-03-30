@@ -10,6 +10,7 @@ services:
       - JWT_SECRET=secretkey
     volumes:
       - ./auth:/app
+      - auth_node_modules:/app/node_modules
 
   webd:
     build: ./webd
@@ -20,6 +21,7 @@ services:
       - JWT_SECRET=secretkey
     volumes:
       - ./webd:/app
+      - webd_node_modules:/app/node_modules
 
   frontend:
     build: ./frontend
@@ -27,3 +29,7 @@ services:
       - "8080:80"
     volumes:
       - ./frontend:/usr/share/nginx/html
+
+volumes:
+  auth_node_modules:
+  webd_node_modules:

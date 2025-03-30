@@ -1,5 +1,6 @@
-
 FROM node:16-alpine
+
+RUN apk add --no-cache python3 make g++
 
 WORKDIR /app
 
@@ -8,6 +9,9 @@ RUN npm install --production
 
 COPY . .
 
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 3001
 
-CMD ["node", "src/index.js"]
+CMD ["/app/entrypoint.sh"]
