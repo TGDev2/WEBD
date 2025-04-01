@@ -13,8 +13,33 @@ const getUserById = async (id) => {
   return await User.findByPk(id);
 };
 
+const getUsers = async () => {
+  return await User.findAll();
+};
+
+const updateUser = async (id, updateData) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return null;
+  }
+  await user.update(updateData);
+  return user;
+};
+
+const deleteUser = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) {
+    return false;
+  }
+  await user.destroy();
+  return true;
+};
+
 module.exports = {
   createUser,
   getUserByEmail,
   getUserById,
+  getUsers,
+  updateUser,
+  deleteUser,
 };
