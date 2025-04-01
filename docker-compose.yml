@@ -30,6 +30,15 @@ services:
     volumes:
       - ./frontend:/usr/share/nginx/html
 
+  lb:
+    build: ./lb
+    ports:
+      - "80:80"
+    depends_on:
+      - auth
+      - webd
+      - frontend
+
 volumes:
   auth_node_modules:
   webd_node_modules:

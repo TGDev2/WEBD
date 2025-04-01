@@ -4,7 +4,6 @@ const bodyParser = require("body-parser");
 
 const eventRoutes = require("./routes/eventRoutes");
 const userRoutes = require("./routes/userRoutes");
-const authRoutes = require("./routes/authRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
@@ -24,7 +23,6 @@ app.get("/health", (req, res) => res.send({ status: "OK" }));
 // Routes principales de l'API
 app.use("/api/events", eventRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
 app.use("/api/tickets", ticketRoutes);
 
 // Lancer le serveur uniquement si ce module est exécuté directement
