@@ -7,6 +7,7 @@ const userRoutes = require("./routes/userRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
+const logger = require("./utils/logger");
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.use("/api/tickets", ticketRoutes);
 // Lancer le serveur uniquement si ce module est exécuté directement
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
+  app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
 }
 
 module.exports = app; // Export pour les tests
