@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
+const logger = require("./utils/logger");
 
 const app = express();
 
@@ -22,8 +23,8 @@ app.use("/api/auth", authRoutes);
 app.get("/health", (req, res) => res.json({ status: "OK" }));
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () =>
-  console.log(`Authentication microservice listening on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  logger.info(`Authentication microservice listening on port ${PORT}`);
+});
 
 module.exports = app;
