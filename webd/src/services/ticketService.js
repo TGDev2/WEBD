@@ -7,7 +7,7 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
   const paymentResult = await paymentService.simulateCardPayment(
     paymentInfo,
     100
-  ); // montant fixe pour l'exemple
+  ); // Montant fixe pour l'exemple
   if (paymentResult.status !== "approved") {
     throw new Error("Payment failed");
   }
@@ -15,7 +15,7 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
   // Démarrage de la transaction pour garantir l'intégrité des opérations
   const transaction = await sequelize.transaction();
   try {
-    // Récupération de l'événement avec verrouillage pour éviter la concurrence
+    // Récupération de l'événement avec verrouillage
     const event = await Event.findByPk(eventId, {
       transaction,
       lock: transaction.LOCK.UPDATE,
@@ -23,10 +23,12 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
     if (!event) {
       throw new Error("Event not found");
     }
+
     // Vérification de la disponibilité de l'événement
     if (event.soldSeats >= event.maxSeats) {
       throw new Error("Event is sold out");
     }
+
     // Incrémenter le nombre de billets vendus
     event.soldSeats += 1;
     await event.save({ transaction });
@@ -34,7 +36,7 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
     // Génération d'un numéro de billet unique
     const ticketNumber = crypto.randomBytes(8).toString("hex");
 
-    // Création du billet unique dans le cadre de la transaction
+    // Création du billet unique
     const ticket = await Ticket.create(
       {
         eventId: event.id,
@@ -62,6 +64,15 @@ const buyTicket = async (userId, eventId, paymentInfo) => {
   }
 };
 
+const getTicketsForUser = async (userId) => {
+  // Inclure l'événement pour fournir plus de contexte à l'utilisateur
+  return Ticket.findAll({
+    where: { userId },
+    include: [Event],
+  });
+};
+
 module.exports = {
   buyTicket,
+  getTicketsForUser,
 };

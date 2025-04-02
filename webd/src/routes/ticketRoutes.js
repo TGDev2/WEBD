@@ -45,4 +45,30 @@ const { authenticateToken } = require("../middlewares/authMiddleware");
  */
 router.post("/buy", authenticateToken, ticketController.buyTicket);
 
+/**
+ * @swagger
+ * /api/tickets/mine:
+ *   get:
+ *     summary: Retrieve all tickets for the currently logged in user
+ *     description: Get the tickets purchased by the authenticated user.
+ *     tags: [Tickets]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of tickets belonging to the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 tickets:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/mine", authenticateToken, ticketController.getUserTickets);
+
 module.exports = router;
