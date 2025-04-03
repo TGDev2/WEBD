@@ -5,9 +5,8 @@ services:
     build: ./auth
     ports:
       - "3001:3001"
-    environment:
-      - NODE_ENV=production
-      - JWT_SECRET=secretkey
+    env_file:
+      - .env
     volumes:
       - ./auth:/app
       - auth_node_modules:/app/node_modules
@@ -16,9 +15,8 @@ services:
     build: ./webd
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - JWT_SECRET=secretkey
+    env_file:
+      - .env
     volumes:
       - ./webd:/app
       - webd_node_modules:/app/node_modules
