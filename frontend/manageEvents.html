@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Events</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="manage-events-container">
+      <h1>Manage Events</h1>
+
+      <div id="roleWarning" class="warning-message"></div>
+
+      <form id="createEventForm" class="event-form">
+        <h2>Create Event</h2>
+        <label for="title">Title:</label>
+        <input type="text" id="title" required />
+
+        <label for="description">Description:</label>
+        <input type="text" id="description" />
+
+        <label for="maxSeats">Max Seats:</label>
+        <input type="number" id="maxSeats" required />
+
+        <label for="date">Date:</label>
+        <input type="datetime-local" id="date" required />
+
+        <button type="submit">Create</button>
+      </form>
+
+      <h2>Existing Events</h2>
+      <div id="eventsList"></div>
+
+      <a href="index.html" class="back-link">Back to Login</a>
+      <a href="events.html" class="back-link">View Events (User Mode)</a>
+    </div>
+
+    <script src="manageEvents.js"></script>
+  </body>
+</html>
