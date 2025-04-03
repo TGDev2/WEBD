@@ -10,4 +10,7 @@ COPY events.js /usr/share/nginx/html/
 COPY manageEvents.html /usr/share/nginx/html/
 COPY manageEvents.js /usr/share/nginx/html/
 
+COPY register.html /usr/share/nginx/html/
+COPY register.js /usr/share/nginx/html/
+
 EXPOSE 80
