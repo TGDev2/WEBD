@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const ticketController = require("../controllers/ticketController");
-const { authenticateToken } = require("../middlewares/authMiddleware");
+const {
+  authenticateToken,
+  authorizeRoles,
+} = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
@@ -43,7 +46,12 @@ const { authenticateToken } = require("../middlewares/authMiddleware");
  *       400:
  *         description: Ticket purchase failed
  */
-router.post("/buy", authenticateToken, ticketController.buyTicket);
+router.post(
+  "/buy",
+  authenticateToken,
+  authorizeRoles("Admin", "EventCreator", "User"), // Ajout du contrôle de rôle
+  ticketController.buyTicket
+);
 
 /**
  * @swagger

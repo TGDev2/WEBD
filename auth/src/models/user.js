@@ -17,8 +17,8 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     role: {
-      type: DataTypes.ENUM("Admin", "EventCreator", "User"),
-      defaultValue: "User",
+      type: DataTypes.ENUM("Admin", "EventCreator", "User", "Basic"),
+      defaultValue: "Basic",
     },
   });
 };
