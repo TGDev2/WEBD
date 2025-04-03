@@ -4,14 +4,13 @@ Le présent système repose sur une **architecture microservices** destinée à 
 
 ```mermaid
 flowchart LR
-    A[Client (Navigateur)] -- HTTP --> LB[Load Balancer (Nginx)]
-    LB --> Frontend[Frontend Container (JavaScript)]
-    LB --> Auth[Auth Service (3001)]
-    LB --> Webd[Webd Service (3000)]
+    A["Client (Navigateur)"] --> LB["Load Balancer (Nginx)"]
+    LB --> Frontend["Frontend Container (JavaScript)"]
+    LB --> Auth["Auth Service (3001)"]
+    LB --> Webd["Webd Service (3000)"]
 
     subgraph Microservices
-    Auth -- SQLite
-    Webd -- SQLite
+      Auth --> Webd
     end
 ```
 
