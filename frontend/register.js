@@ -1,3 +1,18 @@
+const languageSelect = document.getElementById("languageSelect");
+
+document.addEventListener("DOMContentLoaded", () => {
+  const storedLanguage = localStorage.getItem("preferredLanguage") || "en";
+  languageSelect.value = storedLanguage;
+});
+
+languageSelect.addEventListener("change", () => {
+  localStorage.setItem("preferredLanguage", languageSelect.value);
+});
+
+function getSelectedLanguage() {
+  return localStorage.getItem("preferredLanguage") || "en";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const registerForm = document.getElementById("registerForm");
   const registerMessage = document.getElementById("registerMessage");
@@ -9,12 +24,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = document.getElementById("registerEmail").value.trim();
     const password = document.getElementById("registerPassword").value.trim();
 
+    const selectedLanguage = getSelectedLanguage();
+
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept-Language": "en",
+          "Accept-Language": selectedLanguage,
         },
         body: JSON.stringify({ email, password }),
       });

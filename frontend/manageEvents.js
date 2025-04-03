@@ -1,9 +1,24 @@
+const languageSelect = document.getElementById("languageSelect");
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const storedLanguage = localStorage.getItem("preferredLanguage") || "en";
+  languageSelect.value = storedLanguage;
+});
+
+languageSelect.addEventListener("change", () => {
+  localStorage.setItem("preferredLanguage", languageSelect.value);
+  location.reload();
+});
+
+function getSelectedLanguage() {
+  return localStorage.getItem("preferredLanguage") || "en";
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const roleWarningDiv = document.getElementById("roleWarning");
   const createEventForm = document.getElementById("createEventForm");
   const eventsListDiv = document.getElementById("eventsList");
 
-  // Vérification de la présence d’un token
   const token = localStorage.getItem("token");
   if (!token) {
     roleWarningDiv.textContent = "Please log in first.";
@@ -11,7 +26,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Récupérer le rôle de l’utilisateur via le token
   let userRole;
   try {
     const payload = parseJwt(token);
@@ -23,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  // Vérifier si l’utilisateur est autorisé
   if (userRole !== "Admin" && userRole !== "EventCreator") {
     roleWarningDiv.textContent =
       "You are not authorized to manage events. Only Admin and EventCreator can access this page.";
@@ -52,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split("")
-        .map(function (c) {
+        .map((c) => {
           return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
         })
         .join("")
@@ -63,13 +76,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function loadEvents() {
     eventsListDiv.innerHTML = "Loading events...";
 
+    const selectedLanguage = getSelectedLanguage();
+
     try {
-      const response = await fetch("http://localhost:3000/api/events", {
+      const response = await fetch("/api/events", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          // Langue par défaut en anglais
-          "Accept-Language": "en",
+          "Accept-Language": selectedLanguage,
           Authorization: `Bearer ${token}`,
         },
       });
@@ -84,7 +98,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Construction de la liste des événements
       eventsListDiv.innerHTML = "";
       data.events.forEach((event) => {
         const eventContainer = document.createElement("div");
@@ -144,12 +157,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const maxSeats = document.getElementById("maxSeats").value;
     const date = document.getElementById("date").value;
 
+    const selectedLanguage = getSelectedLanguage();
+
     try {
-      const response = await fetch("http://localhost:3000/api/events", {
+      const response = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept-Language": "en",
+          "Accept-Language": selectedLanguage,
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -172,7 +187,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function editEvent(event) {
-    // On demande à l’utilisateur les nouvelles valeurs
     const newTitle = prompt("New title:", event.title);
     if (newTitle === null) return;
 
@@ -188,7 +202,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     if (newDate === null) return;
 
-    // Appel à l’API pour mettre à jour l’événement
     updateEvent(event.id, {
       title: newTitle,
       description: newDescription,
@@ -198,12 +211,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function updateEvent(id, payload) {
+    const selectedLanguage = getSelectedLanguage();
+
     try {
-      const response = await fetch(`http://localhost:3000/api/events/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Accept-Language": "en",
+          "Accept-Language": selectedLanguage,
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
@@ -220,12 +235,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function deleteEvent(id) {
+    const selectedLanguage = getSelectedLanguage();
+
     try {
-      const response = await fetch(`http://localhost:3000/api/events/${id}`, {
+      const response = await fetch(`/api/events/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          "Accept-Language": "en",
+          "Accept-Language": selectedLanguage,
           Authorization: `Bearer ${token}`,
         },
       });

@@ -1,3 +1,21 @@
+const languageSelect = document.getElementById("languageSelect");
+
+// Au chargement, on définit la langue depuis localStorage si existante
+document.addEventListener("DOMContentLoaded", () => {
+  const storedLanguage = localStorage.getItem("preferredLanguage") || "en";
+  languageSelect.value = storedLanguage;
+});
+
+// Quand l'utilisateur change la sélection, on met à jour le localStorage
+languageSelect.addEventListener("change", () => {
+  localStorage.setItem("preferredLanguage", languageSelect.value);
+});
+
+// Récupération de la langue préférée
+function getSelectedLanguage() {
+  return localStorage.getItem("preferredLanguage") || "en";
+}
+
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -6,13 +24,16 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
   const messageDiv = document.getElementById("message");
   messageDiv.textContent = "";
 
+  // On récupère la langue sélectionnée
+  const selectedLanguage = getSelectedLanguage();
+
   try {
-    // Utilisation d'une URL relative pour éviter les problèmes de CORS via le Load Balancer
+    // Utilisation d'une URL relative pour passer par le load balancer
     const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Accept-Language": "en",
+        "Accept-Language": selectedLanguage,
       },
       body: JSON.stringify({ email, password }),
     });
@@ -24,7 +45,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       localStorage.setItem("token", data.token);
       messageDiv.textContent = "Connexion réussie !";
 
-      // Vérifier si l’utilisateur est admin ou eventcreator
+      // Vérifier si l’utilisateur est Admin ou EventCreator et afficher le lien en conséquence
       const isAdminOrCreator = checkUserRole(data.token, [
         "Admin",
         "EventCreator",
@@ -32,6 +53,9 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       if (isAdminOrCreator) {
         document.getElementById("adminLinkContainer").style.display = "block";
       }
+      setTimeout(() => {
+        window.location.href = "events.html";
+      }, 1000);
     } else {
       messageDiv.textContent = data.message || "Échec de la connexion.";
     }
