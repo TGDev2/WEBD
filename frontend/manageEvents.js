@@ -154,13 +154,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function createEvent() {
     const title = document.getElementById("title").value.trim();
     const description = document.getElementById("description").value.trim();
-    const maxSeats = document.getElementById("maxSeats").value;
-    const date = document.getElementById("date").value;
+    const maxSeats = Number(document.getElementById("maxSeats").value);
+    const dateInput = document.getElementById("date").value;
+    const date = new Date(dateInput).toISOString();
 
     const selectedLanguage = getSelectedLanguage();
 
     try {
-      const response = await fetch("/api/events", {
+      const response = await fetch("/api/events/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

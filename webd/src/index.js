@@ -7,6 +7,7 @@ const ticketRoutes = require("./routes/ticketRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
 const logger = require("./utils/logger");
+const { sequelize } = require("./models");
 
 const app = express();
 
@@ -24,9 +25,20 @@ app.get("/health", (req, res) => res.send({ status: "OK" }));
 app.use("/api/events", eventRoutes);
 app.use("/api/tickets", ticketRoutes);
 
+async function startServer() {
+  try {
+    await sequelize.sync();
+    logger.info("Database synchronized");
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
+  } catch (error) {
+    logger.error("Failed to synchronize database:", error);
+    process.exit(1);
+  }
+}
+
 if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
+  startServer();
 }
 
 module.exports = app;

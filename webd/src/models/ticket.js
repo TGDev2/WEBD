@@ -1,4 +1,3 @@
-// webd/src/models/ticket.js
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
@@ -19,22 +18,10 @@ module.exports = (sequelize) => {
         type: DataTypes.DATE,
         allowNull: false,
       },
--     userId: {
--       type: DataTypes.INTEGER,
--       allowNull: false,
--       references: {
--         model: "Users",
--         key: "id",
--       },
--       onUpdate: "CASCADE",
--       onDelete: "CASCADE",
--     },
-+     // On garde userId sans contrainte => plus de référence vers une table Users
-+     userId: {
-+       type: DataTypes.INTEGER,
-+       allowNull: false,
-+     },
-
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       eventId: {
         type: DataTypes.INTEGER,
         allowNull: false,
