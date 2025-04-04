@@ -1,65 +1,29 @@
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
 const app = require("../src/index");
-const { User, Event, Ticket } = require("../src/models");
+const { Event, Ticket } = require("../src/models");
 
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
 describe("Ticket Retrieval Endpoint", () => {
-  let adminToken;
-  let adminUserId;
   let userToken;
-  let testUserId;
+  let testUserId = 101; // On simule un user ID
   let testEvent;
 
   beforeAll(async () => {
-    // Nettoyage complet de la base
+    // Nettoyage complet
     await Ticket.destroy({ where: {} });
     await Event.destroy({ where: {} });
-    await User.destroy({ where: {} });
 
-    // 1. Générer un token Admin "falsifié" pour créer via /api/users
-    adminToken = jwt.sign({ id: 999, role: "Admin" }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    // 2. Créer un utilisateur Admin (email unique)
-    const uniqueAdminEmail = `admin${Date.now()}@test.com`;
-    const adminRes = await request(app)
-      .post("/api/users")
-      .set("Authorization", `Bearer ${adminToken}`)
-      .set("Accept-Language", "en")
-      .send({
-        email: uniqueAdminEmail,
-        password: "adminPass",
-        role: "Admin",
-      });
-    expect(adminRes.statusCode).toBe(201);
-    adminUserId = adminRes.body.user.id;
-
-    // 3. Créer un utilisateur normal (email unique)
-    const uniqueUserEmail = `user${Date.now()}@test.com`;
-    const userRes = await request(app)
-      .post("/api/users")
-      .set("Authorization", `Bearer ${adminToken}`)
-      .set("Accept-Language", "en")
-      .send({
-        email: uniqueUserEmail,
-        password: "userPass",
-        role: "User",
-      });
-    expect(userRes.statusCode).toBe(201);
-    testUserId = userRes.body.user.id;
-
-    // 4. Générer un token pour l'utilisateur normal
+    // Générer un token User "falsifié"
     userToken = jwt.sign({ id: testUserId, role: "User" }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // 5. Créer un événement via /api/events avec le token Admin
+    // Créer un event
     const eventRes = await request(app)
       .post("/api/events")
-      .set("Authorization", `Bearer ${adminToken}`)
+      .set("Authorization", `Bearer ${userToken}`)
       .set("Accept-Language", "en")
       .send({
         title: "Test Event",
@@ -68,9 +32,10 @@ describe("Ticket Retrieval Endpoint", () => {
         date: new Date().toISOString(),
       });
     expect(eventRes.statusCode).toBe(201);
+
     testEvent = eventRes.body.event;
 
-    // 6. Acheter un billet (user normal)
+    // Acheter un billet (pour userId = testUserId)
     const buyRes = await request(app)
       .post("/api/tickets/buy")
       .set("Authorization", `Bearer ${userToken}`)
@@ -86,10 +51,8 @@ describe("Ticket Retrieval Endpoint", () => {
   });
 
   afterAll(async () => {
-    // Nettoyage final
     await Ticket.destroy({ where: {} });
     await Event.destroy({ where: {} });
-    await User.destroy({ where: {} });
   });
 
   test("should retrieve tickets for the authenticated user", async () => {

@@ -1,45 +1,25 @@
 const request = require("supertest");
 const jwt = require("jsonwebtoken");
 const app = require("../src/index");
-const { User, Event, Ticket } = require("../src/models");
+const { Event, Ticket } = require("../src/models");
 
 const JWT_SECRET = process.env.JWT_SECRET || "secretkey";
 
 describe("Ticket Purchase Process", () => {
   let adminToken;
-  let adminUserId;
   let testEvent;
 
   beforeAll(async () => {
-    // Nettoyage complet
+    // Nettoyage complet de la base Tickets/Events
     await Ticket.destroy({ where: {} });
     await Event.destroy({ where: {} });
-    await User.destroy({ where: {} });
 
-    // Générer un token Admin "falsifié" (pour /api/users)
+    // Générer un token Admin "falsifié" pour tester l'accès
     adminToken = jwt.sign({ id: 999, role: "Admin" }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Créer un email unique (pour éviter l'erreur de duplicat unique)
-    const uniqueEmail = `admin${Date.now()}@test.com`;
-
-    // Créer un user admin RÉEL dans la base Webd (via /api/users)
-    const adminRes = await request(app)
-      .post("/api/users")
-      .set("Authorization", `Bearer ${adminToken}`)
-      .set("Accept-Language", "en") // forcer l'anglais pour les retours
-      .send({
-        email: uniqueEmail,
-        password: "adminPass",
-        role: "Admin",
-      });
-    expect(adminRes.statusCode).toBe(201);
-
-    // Récupérer l'ID du nouvel user
-    adminUserId = adminRes.body.user.id;
-
-    // Créer un event
+    // Créer un événement via /api/events
     const eventRes = await request(app)
       .post("/api/events")
       .set("Authorization", `Bearer ${adminToken}`)
@@ -59,7 +39,6 @@ describe("Ticket Purchase Process", () => {
     // Nettoyage final
     await Ticket.destroy({ where: {} });
     await Event.destroy({ where: {} });
-    await User.destroy({ where: {} });
   });
 
   test("should purchase a ticket successfully when seats are available", async () => {
@@ -68,13 +47,12 @@ describe("Ticket Purchase Process", () => {
       .set("Authorization", `Bearer ${adminToken}`)
       .set("Accept-Language", "en")
       .send({
-        userId: adminUserId,
+        userId: 999,
         eventId: testEvent.id,
         paymentInfo: {
           cardNumber: "1234567812345678",
         },
       });
-    // Attendu: code 201 et message "Ticket purchased successfully"
     expect(response.statusCode).toBe(201);
     expect(response.body).toHaveProperty("ticket");
     expect(response.body.ticket).toHaveProperty("id");
@@ -87,7 +65,7 @@ describe("Ticket Purchase Process", () => {
       .set("Authorization", `Bearer ${adminToken}`)
       .set("Accept-Language", "en")
       .send({
-        userId: adminUserId,
+        userId: 999,
         eventId: testEvent.id,
         paymentInfo: {
           cardNumber: "1234567812345678",
@@ -95,8 +73,6 @@ describe("Ticket Purchase Process", () => {
       });
 
     expect(response.statusCode).toBe(400);
-
-    // Le message en anglais attendu est "Ticket purchase failed"
     expect(response.body).toHaveProperty("message", "Ticket purchase failed");
   });
 });
