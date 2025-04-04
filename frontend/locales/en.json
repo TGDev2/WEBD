@@ -40,5 +40,13 @@
   "registerFail": "Registration failed. Please try again.",
   "alreadyHaveAccount": "Already have an account?",
   "signIn": "Log in",
-  "logoutLink": "Logout"
+  "logoutLink": "Logout",
+  "manageUsersLink": "Manage Users (Admin)",
+  "manageUsersTitle": "Manage Users",
+  "createUserHeader": "Create User",
+  "userEmailLabel": "Email:",
+  "userPasswordLabel": "Password:",
+  "userRoleLabel": "Role:",
+  "createUserButton": "Create",
+  "existingUsers": "Existing Users"
 }

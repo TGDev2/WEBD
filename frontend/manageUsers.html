@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="language-selector">
+      <label for="languageSelect" data-i18n="languageLabel">Language:</label>
+      <select
+        id="languageSelect"
+        onchange="localStorage.setItem('preferredLanguage', this.value); location.reload();"
+      >
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+      </select>
+    </div>
+
+    <div class="manage-events-container">
+      <h1><span data-i18n="manageUsersTitle">Manage Users</span></h1>
+
+      <div id="roleWarning" class="warning-message"></div>
+
+      <form id="createUserForm" class="event-form">
+        <h2><span data-i18n="createUserHeader">Create User</span></h2>
+        <label for="userEmail" data-i18n="userEmailLabel">Email:</label>
+        <input type="email" id="userEmail" required />
+
+        <label for="userPassword" data-i18n="userPasswordLabel"
+          >Password:</label
+        >
+        <input type="password" id="userPassword" required />
+
+        <label for="userRole" data-i18n="userRoleLabel">Role:</label>
+        <select id="userRole">
+          <option value="Admin">Admin</option>
+          <option value="EventCreator">EventCreator</option>
+          <option value="User" selected>User</option>
+          <option value="Basic">Basic</option>
+        </select>
+
+        <button type="submit" data-i18n="createUserButton">Create</button>
+      </form>
+
+      <h2><span data-i18n="existingUsers">Existing Users</span></h2>
+      <div id="usersList"></div>
+
+      <a href="index.html" class="back-link" data-i18n="backToLogin"
+        >Back to Login</a
+      >
+      <a href="events.html" class="back-link" data-i18n="myTicketsLink"
+        >View Events</a
+      >
+    </div>
+
+    <script src="manageUsers.js"></script>
+    <script src="i18nFrontend.js"></script>
+  </body>
+</html>

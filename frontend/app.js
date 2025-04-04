@@ -53,6 +53,11 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
       if (isAdminOrCreator) {
         document.getElementById("adminLinkContainer").style.display = "block";
       }
+      const isAdmin = checkUserRole(data.token, ["Admin"]);
+      if (isAdmin) {
+        document.getElementById("adminUserLinkContainer").style.display =
+          "block";
+      }
       setTimeout(() => {
         window.location.href = "events.html";
       }, 1000);

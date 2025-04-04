@@ -40,5 +40,13 @@
   "registerFail": "Échec de l'inscription. Veuillez réessayer.",
   "alreadyHaveAccount": "Vous avez déjà un compte ?",
   "signIn": "Se connecter",
-  "logoutLink": "Se déconnecter"
+  "logoutLink": "Se déconnecter",
+  "manageUsersLink": "Gérer les utilisateurs (Admin)",
+  "manageUsersTitle": "Gérer les utilisateurs",
+  "createUserHeader": "Créer un utilisateur",
+  "userEmailLabel": "Courriel :",
+  "userPasswordLabel": "Mot de passe :",
+  "userRoleLabel": "Rôle :",
+  "createUserButton": "Créer",
+  "existingUsers": "Utilisateurs existants"
 }
