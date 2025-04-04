@@ -8,21 +8,31 @@
   </head>
   <body>
     <div class="language-selector">
-      <label for="languageSelect">Language:</label>
-      <select id="languageSelect">
+      <label for="languageSelect" data-i18n="languageLabel">Language:</label>
+      <select
+        id="languageSelect"
+        onchange="localStorage.setItem('preferredLanguage', this.value); location.reload();"
+      >
         <option value="en">English</option>
         <option value="fr">Français</option>
       </select>
     </div>
 
     <div class="tickets-container">
-      <h1>My Tickets</h1>
-      <div id="ticketsList">Loading...</div>
+      <h1><span data-i18n="myTicketsTitle">My Tickets</span></h1>
+      <div id="ticketsList">
+        <span data-i18n="loadingTickets">Loading...</span>
+      </div>
       <div id="ticketsMessage"></div>
-      <a href="index.html" class="back-link">Back to Login</a>
-      <a href="events.html" class="back-link">View Events</a>
+      <a href="index.html" class="back-link" data-i18n="backToLogin"
+        >Back to Login</a
+      >
+      <a href="events.html" class="back-link" data-i18n="myTicketsLink"
+        >View Events</a
+      >
     </div>
 
     <script src="myTickets.js"></script>
+    <script src="i18nFrontend.js"></script>
   </body>
 </html>

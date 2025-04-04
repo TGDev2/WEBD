@@ -8,18 +8,21 @@
   </head>
   <body>
     <div class="language-selector">
-      <label for="languageSelect">Language:</label>
-      <select id="languageSelect">
+      <label for="languageSelect" data-i18n="languageLabel">Language:</label>
+      <select
+        id="languageSelect"
+        onchange="localStorage.setItem('preferredLanguage', this.value); location.reload();"
+      >
         <option value="en">English</option>
         <option value="fr">Français</option>
       </select>
     </div>
 
     <div class="login-container">
-      <h1>Create an Account</h1>
+      <h1><span data-i18n="createAccountTitle">Create an Account</span></h1>
       <form id="registerForm">
         <div>
-          <label for="registerEmail">Email:</label>
+          <label for="registerEmail" data-i18n="emailLabel">Email:</label>
           <input
             type="email"
             id="registerEmail"
@@ -28,7 +31,9 @@
           />
         </div>
         <div>
-          <label for="registerPassword">Password:</label>
+          <label for="registerPassword" data-i18n="passwordLabel"
+            >Password:</label
+          >
           <input
             type="password"
             id="registerPassword"
@@ -36,16 +41,17 @@
             required
           />
         </div>
-        <button type="submit">Sign Up</button>
+        <button type="submit" data-i18n="registerLink">Sign Up</button>
       </form>
       <div id="registerMessage"></div>
 
       <div style="text-align: center; margin-top: 15px">
-        Already have an account?
-        <a href="index.html">Log in</a>
+        <span data-i18n="alreadyHaveAccount">Already have an account?</span>
+        <a href="index.html" data-i18n="signIn">Log in</a>
       </div>
     </div>
 
     <script src="register.js"></script>
+    <script src="i18nFrontend.js"></script>
   </body>
 </html>

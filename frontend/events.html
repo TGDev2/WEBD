@@ -8,19 +8,25 @@
   </head>
   <body>
     <div class="language-selector">
-      <label for="languageSelect">Language:</label>
-      <select id="languageSelect">
+      <label for="languageSelect" data-i18n="languageLabel">Language:</label>
+      <select
+        id="languageSelect"
+        onchange="localStorage.setItem('preferredLanguage', this.value); location.reload();"
+      >
         <option value="en">English</option>
         <option value="fr">Français</option>
       </select>
     </div>
 
     <div class="events-container">
-      <h1>Available Events</h1>
+      <h1><span data-i18n="eventTitle">Available Events</span></h1>
       <div id="eventsList"></div>
       <div id="purchaseMessage"></div>
-      <a href="index.html" class="back-link">Back to Login</a>
+      <a href="index.html" class="back-link" data-i18n="backToLogin"
+        >Back to Login</a
+      >
     </div>
     <script src="events.js"></script>
+    <script src="i18nFrontend.js"></script>
   </body>
 </html>

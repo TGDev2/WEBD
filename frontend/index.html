@@ -8,36 +8,54 @@
   </head>
   <body>
     <div class="language-selector">
-      <label for="languageSelect">Language:</label>
-      <select id="languageSelect">
+      <label for="languageSelect" data-i18n="languageLabel">Language:</label>
+      <select
+        id="languageSelect"
+        onchange="localStorage.setItem('preferredLanguage', this.value); location.reload();"
+      >
         <option value="en">English</option>
         <option value="fr">Français</option>
       </select>
     </div>
 
     <div class="login-container">
-      <h1>Login</h1>
+      <h1><span data-i18n="loginTitle">Login</span></h1>
       <form id="loginForm">
         <div>
-          <label for="email">Email :</label>
-          <input type="email" id="email" name="email" required />
+          <label for="email" data-i18n="emailLabel">Email :</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            data-i18n-placeholder="emailLabel"
+          />
         </div>
         <div>
-          <label for="password">Password :</label>
-          <input type="password" id="password" name="password" required />
+          <label for="password" data-i18n="passwordLabel">Password :</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            data-i18n-placeholder="passwordLabel"
+          />
         </div>
-        <button type="submit">Log in</button>
+        <button type="submit" data-i18n="loginButton">Log in</button>
       </form>
       <div id="message"></div>
       <div id="adminLinkContainer" style="display: none; margin-top: 20px">
-        <a href="manageEvents.html">Manage Events (Admin/EventCreator)</a>
+        <a href="manageEvents.html" data-i18n="manageEventsLink"
+          >Manage Events (Admin/EventCreator)</a
+        >
       </div>
       <div style="text-align: center; margin-top: 15px">
-        Don't have an account?
-        <a href="register.html">Sign Up</a>
+        <span data-i18n="registerPrompt">Don't have an account?</span>
+        <a href="register.html" data-i18n="registerLink">Sign Up</a>
       </div>
     </div>
 
     <script src="app.js"></script>
+    <script src="i18nFrontend.js"></script>
   </body>
 </html>
