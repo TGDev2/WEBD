@@ -1,12 +1,8 @@
+// auth/src/services/userService.js
 const { User } = require("../models");
 
 const createUser = async (userData) => {
-  const user = await User.create(userData);
-  return user;
-};
-
-const getUserByEmail = async (email) => {
-  return await User.findOne({ where: { email } });
+  return await User.create(userData);
 };
 
 const getUserById = async (id) => {
@@ -37,7 +33,6 @@ const deleteUser = async (id) => {
 
 module.exports = {
   createUser,
-  getUserByEmail,
   getUserById,
   getUsers,
   updateUser,

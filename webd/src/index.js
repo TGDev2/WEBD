@@ -3,7 +3,6 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 
 const eventRoutes = require("./routes/eventRoutes");
-const userRoutes = require("./routes/userRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
@@ -23,13 +22,11 @@ app.get("/health", (req, res) => res.send({ status: "OK" }));
 
 // Routes principales de l'API
 app.use("/api/events", eventRoutes);
-app.use("/api/users", userRoutes);
 app.use("/api/tickets", ticketRoutes);
 
-// Lancer le serveur uniquement si ce module est exécuté directement
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => logger.info(`Server listening on port ${PORT}`));
 }
 
-module.exports = app; // Export pour les tests
+module.exports = app;

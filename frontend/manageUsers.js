@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedLanguage = getSelectedLanguage();
 
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/auth/users", {
         method: "GET",
         headers: {
           "Accept-Language": selectedLanguage,
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedLanguage = getSelectedLanguage();
 
     try {
-      const response = await fetch("/api/users", {
+      const response = await fetch("/api/auth/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedLanguage = getSelectedLanguage();
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/auth/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selectedLanguage = getSelectedLanguage();
 
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/auth/users/${userId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

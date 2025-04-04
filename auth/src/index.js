@@ -7,6 +7,7 @@ const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
 const logger = require("./utils/logger");
 const checkAdminUser = require("./startup/checkAdminUser");
+const userAdminRoutes = require("./routes/userAdminRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Endpoints d'authentification
 app.use("/api/auth", authRoutes);
+app.use("/api/auth/users", userAdminRoutes);
 
 // Endpoint de vérification de l'état de l'application
 app.get("/health", (req, res) => res.json({ status: "OK" }));

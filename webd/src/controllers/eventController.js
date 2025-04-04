@@ -1,10 +1,17 @@
+// webd/src/controllers/eventController.js
 const eventService = require("../services/eventService");
 const logger = require("../utils/logger");
 
 exports.createEvent = async (req, res) => {
   try {
+    // Appel au service pour créer l'évènement
     const event = await eventService.createEvent(req.body);
-    res.status(201).json({ message: req.t("eventCreated"), event });
+
+    // IMPORTANT : Retourner un champ 'event'
+    res.status(201).json({
+      message: req.t("eventCreated"),
+      event,
+    });
   } catch (error) {
     logger.error("Error creating event:", error);
     res.status(500).json({ message: req.t("internalServerError") });
@@ -43,9 +50,10 @@ exports.updateEvent = async (req, res) => {
     if (!updatedEvent) {
       return res.status(404).json({ message: req.t("eventNotFound") });
     }
-    res
-      .status(200)
-      .json({ message: req.t("eventUpdated"), event: updatedEvent });
+    res.status(200).json({
+      message: req.t("eventUpdated"),
+      event: updatedEvent,
+    });
   } catch (error) {
     logger.error("Error updating event:", error);
     res.status(500).json({ message: req.t("internalServerError") });
