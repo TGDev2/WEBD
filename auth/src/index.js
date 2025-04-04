@@ -6,6 +6,7 @@ const authRoutes = require("./routes/authRoutes");
 const { swaggerUi, swaggerSpec } = require("./swagger");
 const i18nMiddleware = require("./middlewares/i18nMiddleware");
 const logger = require("./utils/logger");
+const checkAdminUser = require("./startup/checkAdminUser");
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.use("/api/auth", authRoutes);
 
 // Endpoint de vérification de l'état de l'application
 app.get("/health", (req, res) => res.json({ status: "OK" }));
+
+checkAdminUser();
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
