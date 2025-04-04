@@ -17,6 +17,12 @@
   --container-bg: #ffffff;
   --border-radius: 8px;
   --transition-duration: 0.3s;
+
+  /* Nouveaux dégradés et couleurs */
+  --body-gradient: linear-gradient(120deg, #f0f4f8, #d9e2ec);
+  --header-bg: linear-gradient(90deg, #007bff, #0056b3);
+  --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* =====================================
@@ -24,13 +30,12 @@
 ===================================== */
 body {
   font-family: var(--font-family);
-  background-color: var(--background-color);
+  background: var(--body-gradient); /* Remplacement par un dégradé */
   color: var(--text-color);
   line-height: 1.6;
   padding: 20px;
 }
 
-/* Utility Classes */
 .container {
   max-width: 1200px;
   margin: auto;
@@ -45,6 +50,36 @@ nav,
 footer {
   margin-bottom: 20px;
   text-align: center;
+}
+
+/* Header amélioré */
+.header-container {
+  background: var(--header-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px 30px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--border-radius);
+}
+
+.main-nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.main-nav .nav-link {
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  transition: color var(--transition-duration);
+}
+
+.main-nav .nav-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
 }
 
 /* =====================================
@@ -64,7 +99,7 @@ footer {
 }
 
 /* =====================================
-   Pages Commune : Formulaires & Boutons
+   Formulaires & Boutons
 ===================================== */
 form {
   display: flex;
@@ -85,6 +120,13 @@ form input {
   border: 1px solid var(--secondary-color);
   border-radius: var(--border-radius);
   font-size: 1rem;
+  transition: border-color var(--transition-duration);
+}
+
+form input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
 }
 
 button {
@@ -95,14 +137,18 @@ button {
   font-size: 1rem;
   border-radius: var(--border-radius);
   cursor: pointer;
-  transition: background-color var(--transition-duration);
+  transition: background-color var(--transition-duration),
+    transform var(--transition-duration);
 }
 
 button:hover {
   background-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
-/* Liens */
+/* =====================================
+   Liens
+===================================== */
 a {
   color: var(--primary-color);
   text-decoration: none;
@@ -123,7 +169,12 @@ a:hover {
   background-color: var(--container-bg);
   padding: 30px;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--transition-duration);
+}
+
+.login-container:hover {
+  box-shadow: var(--card-hover-shadow);
 }
 
 .login-container h1 {
@@ -142,7 +193,6 @@ a:hover {
 /* =====================================
    Page d'Inscription
 ===================================== */
-/* Utilise les mêmes styles que la page de connexion */
 .login-container form input,
 .login-container button {
   width: 100%;
@@ -166,7 +216,12 @@ a:hover {
   margin: 15px 0;
   padding: 20px;
   border-radius: var(--border-radius);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--transition-duration);
+}
+
+.event-item:hover {
+  box-shadow: var(--card-hover-shadow);
 }
 
 .event-item h2 {
@@ -185,15 +240,17 @@ a:hover {
   background-color: var(--primary-color);
   color: #fff;
   cursor: pointer;
-  transition: background-color var(--transition-duration);
+  transition: background-color var(--transition-duration),
+    transform var(--transition-duration);
 }
 
 .event-item button:hover {
   background-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 /* =====================================
-   Page de Gestion des Événements
+   Page de Gestion des Événements / Utilisateurs
 ===================================== */
 .manage-events-container {
   max-width: 800px;
@@ -201,7 +258,12 @@ a:hover {
   background-color: var(--container-bg);
   padding: 30px;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--transition-duration);
+}
+
+.manage-events-container:hover {
+  box-shadow: var(--card-hover-shadow);
 }
 
 .manage-events-container h1 {
@@ -229,6 +291,11 @@ a:hover {
   font-size: 1rem;
 }
 
+.manage-events-container form input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
 .manage-events-container form button {
   padding: 10px 15px;
   border: none;
@@ -237,11 +304,13 @@ a:hover {
   color: #fff;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color var(--transition-duration);
+  transition: background-color var(--transition-duration),
+    transform var(--transition-duration);
 }
 
 .manage-events-container form button:hover {
   background-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .warning-message {
@@ -259,7 +328,12 @@ a:hover {
   background-color: var(--container-bg);
   padding: 30px;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow var(--transition-duration);
+}
+
+.tickets-container:hover {
+  box-shadow: var(--card-hover-shadow);
 }
 
 .tickets-container h1 {
@@ -274,6 +348,11 @@ a:hover {
   padding: 15px;
   border-radius: var(--border-radius);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow var(--transition-duration);
+}
+
+.ticket-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
 }
 
 .ticket-item h3 {
@@ -299,26 +378,4 @@ a:hover {
   footer {
     text-align: center;
   }
-}
-
-/* =====================================
-   Header Navigation
-===================================== */
-.header-container {
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  padding: 10px 20px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.main-nav .nav-link {
-  margin-left: 10px;
-  text-decoration: none;
-  color: var(--primary-color);
-}
-
-.main-nav .nav-link:hover {
-  text-decoration: underline;
 }
