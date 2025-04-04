@@ -1,76 +1,112 @@
 # Concert Ticketing System - Microservices Architecture
 
-This repository contains a SaaS platform for managing concerts and events. It is designed to handle both small events (such as a school play) and large-scale concerts involving international artists. The project is built around a microservices architecture to ensure scalability and flexibility.
+Ce dépôt contient un **SaaS** de billetterie conçu pour gérer aussi bien de petits événements (ex. : spectacle scolaire) que de grandes tournées internationales. Le projet est structuré en plusieurs **microservices** afin de garantir la **scalabilité**, la **flexibilité** et la **maintenabilité**.
 
-## Overview
+## Composition du projet
 
-The application is organized into four main services:
+Le système est organisé en **quatre services** distincts, chacun exécuté dans son propre conteneur Docker :
 
-1. **Auth Service** – Manages user registration, login, and JWT-based authentication.
-2. **Webd Service** – Handles the core business logic for events, ticketing, and user operations at an administrative level.
-3. **Frontend** – Provides a user interface built in JavaScript for browsing events, buying tickets, and managing events (if the user has sufficient privileges).
-4. **Load Balancer (lb)** – An Nginx server that routes incoming traffic to the appropriate microservices or the frontend.
+1. **Auth Service (auth/)**  
+   - Gère l’enregistrement et la connexion des utilisateurs via JWT.  
+   - Implémente quatre rôles : `Admin`, `EventCreator`, `User`, `Basic`.  
+   - Stocke les utilisateurs dans une base de données **SQLite** locale.  
+   - Peut créer un compte administrateur par défaut, si configuré via les variables d’environnement (`ADMIN_EMAIL`, `ADMIN_PASSWORD`).
 
-Each microservice runs in its own container, and Docker Compose orchestrates them. This design makes the system easier to maintain, scale, and deploy.  
+2. **Webd Service (webd/)**  
+   - Gère la logique métier relative aux événements (CRUD complet), aux billets et aux achats.  
+   - Utilise une base de données **SQLite** indépendante pour stocker les événements et tickets.  
+   - Vérifie systématiquement le **nombre de places disponibles** avant chaque achat, évitant toute sur-vente (grâce à un verrouillage transactionnel).  
+   - Simule un **paiement par carte** (contrôle du numéro de carte, 16 chiffres requis) et déclenche une **confirmation asynchrone** (pseudo email / SMS).  
+   - Expose plusieurs routes protégées par rôles (seuls `Admin` et `EventCreator` peuvent créer ou supprimer des événements).
 
-## Features and Functionality
+3. **Frontend (frontend/)**  
+   - Application JavaScript servie via un conteneur Nginx.  
+   - Propose des écrans de connexion, liste d’événements, achat de billets, gestion des événements (si rôle élevé), et gestion des utilisateurs (si rôle `Admin`).  
+   - Interagit uniquement avec le **Load Balancer** sur le port 80, qui redirige les requêtes vers les microservices Auth et Webd.
 
-This platform allows users to create, update, read, and delete events. Each event has a maximum capacity (number of available seats), which cannot be exceeded during ticket purchase. The Auth Service handles user authentication and supports three roles with different permissions: **Admin**, **EventCreator**, and **User**. A fourth type of user, which we can call a basic user, can access the system with fewer privileges.  
+4. **Load Balancer (lb/)**  
+   - Un conteneur Nginx distinct, configuré pour recevoir tout le trafic sur le port 80.  
+   - Route automatiquement les chemins `/api/auth/...` vers `auth:3001`, ceux de `/api/events/...` et `/api/tickets/...` vers `webd:3000`, et sert le **Frontend** par défaut.
 
-Ticket purchases are simulated to demonstrate how a user can pay by credit card (the system checks for a valid but placeholder card number). Whenever a ticket is purchased, the system confirms the sale asynchronously and ensures that the event’s seat limits are respected. Users are notified in case of any error, and logs are produced to help diagnose problems.  
+Cette séparation en microservices simplifie la maintenance : chaque service peut être mis à jour et déployé indépendamment. Elle permet également de faire évoluer seulement les parties de l’application qui en ont besoin (par exemple, augmenter le nombre d’instances du service Webd en cas de forte demande).
 
-The application supports both English and French. Through simple mechanisms in each microservice, the request header `Accept-Language` determines which language is used for responses. Passwords are always stored securely in hashed form, and important operations are logged to ensure that debugging information is available in case of issues.
+## Principales Fonctionnalités
 
-## Architecture Details
+- **CRUD d’événements**  
+  - Chaque événement possède un titre, une description, une date et un nombre maximum de places (`maxSeats`).  
+  - Le champ `soldSeats` permet de suivre le nombre de billets vendus.
 
-- **Auth Service (auth/)**  
-  Exposes endpoints for user registration and login (`/api/auth/register`, `/api/auth/login`). It uses JWT to issue tokens that include the user’s role. It stores user data in a local SQLite database via Sequelize.
-  
-- **Webd Service (webd/)**  
-  Handles events, ticket purchases, and additional user CRUD operations (restricted to Admin for certain routes). It manages a separate local SQLite database. Payment is simulated, and the system prevents overselling seats by locking and updating records within a transaction.
+- **Gestion des utilisateurs**  
+  - Les comptes sont créés via `/api/auth/register`.  
+  - La connexion se fait via `/api/auth/login`, et on reçoit un token JWT.  
+  - En fonction du rôle, l’utilisateur aura plus ou moins de droits (accès à la création/suppression d’événements, à la gestion des utilisateurs, etc.).
 
-- **Frontend (frontend/)**  
-  A JavaScript-based interface served by an Nginx container. It includes HTML pages that allow users to log in, view events, and buy tickets. Users with elevated roles (Admin or EventCreator) can manage events (create, edit, or delete).  
+- **Achat de billets**  
+  - Le service Webd assure l’achat : il vérifie en transaction si l’événement a des places disponibles (`soldSeats < maxSeats`).  
+  - Génère un ticket unique (numérotation par `crypto.randomBytes`).  
+  - Effectue une **simulation de paiement** (carte de 16 chiffres) et, si validé, incrémente `soldSeats`.  
+  - Déclenche un appel asynchrone (simulé) pour la confirmation (SMS/email).  
+  - Le nouvel acquéreur peut consulter son billet dans l’écran *« My Tickets »* du Frontend.
 
-- **Load Balancer (lb/)**  
-  Uses Nginx to direct traffic from port 80 to the appropriate service:  
-  - `auth:3001` for authentication.  
-  - `webd:3000` for events, tickets, and user management.  
-  - `frontend:80` for the web interface.
+- **Multilingue**  
+  - Le système supporte l’anglais et le français.  
+  - Chaque service utilise un middleware pour déterminer la langue (entête `Accept-Language`) et renvoie les messages dans la langue choisie.
 
-## Getting Started
+- **Sécurité**  
+  - Les mots de passe sont hashés avec **bcrypt** ; aucun mot de passe en clair dans la base.  
+  - Les endpoints sensibles vérifient le token JWT (middleware `authenticateToken`).
 
-### Prerequisites
+- **Logs et tests**  
+  - Les services Auth et Webd utilisent Winston pour la journalisation.  
+  - Des tests (Jest / Supertest) sont disponibles pour vérifier les fonctionnalités clés (exemple : achat de billet).
 
-You need to have Docker and Docker Compose installed on your machine. The system is set up so that all services run in their respective containers without requiring any additional local installations besides Docker.
+## Lancer le projet
 
-### Installation and Launch
+### Prérequis
+- **Docker** et **Docker Compose** doivent être installés.
 
-1. **Clone this repository** to your local machine.
-2. Open a terminal in the root directory, which contains the `docker-compose.yml` file.
-3. Run the following commands:
+### Étapes
+1. **Cloner** ce dépôt en local.
+2. Se placer dans le dossier racine (contenant `docker-compose.yml`).
+3. Copier le fichier `.env.example` en `.env` et renseigner éventuellement les variables voulues (`JWT_SECRET`, `CREATE_DEFAULT_ADMIN`, etc.).
+4. Lancer la commande :
    ```bash
    docker-compose build
    docker-compose up
    ```
-4. When all containers have started successfully, you can visit:
-   - **http://localhost** : The main entry point handled by the load balancer.
-   - **http://localhost/api-docs** : Swagger documentation for the Webd microservice.
-   - **http://localhost/api/auth/api-docs** : Swagger documentation for the Auth microservice.
-   - **http://localhost:8080** : The frontend served by Nginx (or through the load balancer at port 80).
+5. Une fois tous les conteneurs démarrés, accéder aux URL suivantes :
+   - **http://localhost** : Interface utilisateur (via le load balancer).  
+   - **http://localhost/api-docs** : Documentation Swagger du service Webd.  
+   - **http://localhost/api/auth/api-docs** : Documentation Swagger du service Auth.  
+   - **http://localhost:8080** : Frontend (si vous contournez le load balancer).
 
-The system will synchronize the databases upon the first launch. Since SQLite is used, each microservice stores its data in a local file named `database.sqlite` inside its container.  
+Chaque microservice stocke sa base **SQLite** en local dans le conteneur, sous le nom `database.sqlite`. Les données sont persistantes entre les redémarrages tant que le volume Docker correspondant n’est pas supprimé.
 
-## Testing and Development
+## Tests
 
-Tests are written with **Jest** and **Supertest**. Each microservice contains its own tests under the `tests/` folder. You can run these tests by entering the service container and using `npm test`, or by installing dependencies locally and running tests directly from your host system.  
+Pour lancer les tests de chaque service :
+- **Auth** :
+  ```bash
+  cd auth
+  npm install
+  npm test
+  ```
+- **Webd** :
+  ```bash
+  cd webd
+  npm install
+  npm test
+  ```
+- **Frontend** :
+  ```bash
+  cd frontend
+  npm install
+  npm test
+  ```
+  (Le `Dockerfile` du Frontend exécute aussi les tests lors de la phase de build.)
 
-For instance, to test the “webd” microservice:
+Un script global `./run-tests.sh` est également prévu pour exécuter les tests dans les conteneurs.
 
-```bash
-cd webd
-npm install
-npm test
-```
+## Documentation Technique
 
-You can do the same for the “auth” microservice in its directory.
+Pour plus de détails sur l’implémentation, le fonctionnement asynchrone et l’enchaînement des composants, consultez le fichier [docs/architecture.md](./docs/architecture.md), qui inclut un schéma de l’architecture et la description des choix techniques (sécurité, transactions pour prévenir la sur-vente, etc.).
